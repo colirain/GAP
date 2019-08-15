@@ -6,6 +6,10 @@ import json
 import sys
 import os
 
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt 
+
 import networkx as nx
 from networkx.readwrite import json_graph
 version_info = list(map(int, nx.__version__.split('.')))
@@ -74,6 +78,32 @@ def load_data(prefix, normalize=True, load_walks=False):
 
     return G, feats, id_map, walks, class_map
 
+def load_embedded_data(prefix):
+    data = np.load(prefix+'.npy')
+    return data
+
+def load_graph_data(prefix):
+    G_data = json.load(open(prefix + "-G.json"))
+    G = json_graph.node_link_graph(G_data)
+    if isinstance(G.nodes()[0], int):
+        conversion = lambda n : int(n)
+    else:
+        conversion = lambda n : n
+    # print("type of conversion:{}".format(type(conversion)))
+    G_np = nx.to_numpy_matrix(G)
+    G_nodes = np.sum(G_np, axis = 1)
+    G_aj =  G_np.astype(bool)
+    # print("size of G_nodes: {}".format(G_nodes.shape))
+    # print(G_nodes)
+    # print(G_aj)
+    # nx.draw(G)
+    # plt.show()
+    # print("info:{}".format(nx.info(G)))
+    id_map = json.load(open(prefix + "-id_map.json"))
+    id_map = {conversion(k):int(v) for k,v in id_map.items()}
+    return G_nodes, G_aj, id_map
+
+
 def run_random_walks(G, nodes, num_walks=N_WALKS):
     pairs = []
     for count, node in enumerate(nodes):
@@ -94,11 +124,13 @@ def run_random_walks(G, nodes, num_walks=N_WALKS):
 if __name__ == "__main__":
     """ Run random walks """
     graph_file = sys.argv[1]
-    out_file = sys.argv[2]
-    G_data = json.load(open(graph_file))
-    G = json_graph.node_link_graph(G_data)
-    nodes = [n for n in G.nodes() if not G.node[n]["val"] and not G.node[n]["test"]]
-    G = G.subgraph(nodes)
-    pairs = run_random_walks(G, nodes)
-    with open(out_file, "w") as fp:
-        fp.write("\n".join([str(p[0]) + "\t" + str(p[1]) for p in pairs]))
+    # out_file = sys.argv[2]
+    # G_data = json.load(open(graph_file))
+    # G = json_graph.node_link_graph(G_data)
+    # nodes = [n for n in G.nodes() if not G.node[n]["val"] and not G.node[n]["test"]]
+    # G = G.subgraph(nodes)
+    # pairs = run_random_walks(G, nodes)
+    # with open(out_file, "w") as fp:
+    #     fp.write("\n".join([str(p[0]) + "\t" + str(p[1]) for p in pairs]))
+    G_data = load_graph(graph_file)
+    # print(type(G_data[1]))

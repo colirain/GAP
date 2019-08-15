@@ -499,3 +499,53 @@ class Node2VecModel(GeneralizedModel):
         _, self.ranks = tf.nn.top_k(-indices_of_ranks, k=size)
         self.mrr = tf.reduce_mean(tf.div(1.0, tf.cast(self.ranks[:, -1] + 1, tf.float32)))
         tf.summary.scalar('mrr', self.mrr)
+
+class FCPartition(Model):
+    """ A standard multi-layer perceptron """
+    def __init__(self, placeholders, dims, **kwargs):
+        super(FCPartition, self).__init__(**kwargs)
+
+        self.dims = dims
+        self.input_dim = dims[0]
+        self.output_dim = dims[-1]
+        self.placeholders = placeholders
+        # self.categorical = categorical
+
+        self.inputs = placeholders['features']
+        # self.labels = placeholders['batch2']
+        # self.D = placeholders['D']
+        # self.A = placeholders['A']
+
+        self.optimizer = tf.train.AdamOptimizer(learning_rate=FLAGS.learning_rate)
+
+        
+        self.build()
+
+    def _loss(self):
+        # Weight decay loss
+        for var in self.layers[0].vars.values():
+            self.loss += FLAGS.weight_decay * tf.nn.l2_loss(var)
+
+        self.loss += metrics.gap_loss(self.outputs, self.placeholders['D'], self.placeholders['A'])
+
+    def _accuracy(self):
+        # if self.categorical:
+        self.accuracy = 1 - tf.losses.mean_squared_error(self.placeholders['labels'], self.outputs)
+
+    def _build(self):
+        self.layers.append(layers.Dense(input_dim=self.input_dim,
+                                 output_dim=self.dims[1],
+                                 act=tf.nn.relu,
+                                 dropout=self.placeholders['dropout'],
+                                 sparse_inputs=False,
+                                 logging=self.logging))
+
+        self.layers.append(layers.Dense(input_dim=self.dims[1],
+                                 output_dim=self.output_dim,
+                                 # act=lambda x: x,
+                                 act = tf.nn.softmax,
+                                 dropout=self.placeholders['dropout'],
+                                 logging=self.logging))
+
+    # def predict(self):
+    #     return tf.nn.softmax(self.outputs)

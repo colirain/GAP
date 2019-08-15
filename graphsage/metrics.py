@@ -38,3 +38,24 @@ def masked_accuracy(preds, labels, mask):
     mask /= tf.reduce_mean(mask)
     accuracy_all *= mask
     return tf.reduce_mean(accuracy_all)
+
+def gap_loss(preds, D, A):
+    """
+    This module implement the loss function in paper [Azada Zazi, Will Hang. et al, 2019] Nazi, Azade & Hang, Will & Goldie, Anna & Ravi, Sujith & Mirhoseini, Azalia. (2019). GAP: Generalizable Approximate Graph Partitioning Framework. 
+    Args:
+        preds (tensor(float)): output predited value, have size n x g
+        D (tensor(float)): degree of nodes, have size n x 1
+        A (tensor(bool)): adjacent matrix of graph, have size n x n
+    Returns:
+        float: the results of the loss function
+    """
+    # print("preds size:{}".format(tf.shape(preds)))
+    # print("D size:{}".format(tf.shape(D)))
+    # print("A size:{}".format(tf.shape(A)))
+    temp = tf.matmul(tf.transpose(preds), D)
+    # print("temp size:{}".format(tf.shape(temp)))
+    temp = tf.transpose(preds)/temp
+    temp = tf.matmul(tf.transpose(temp), tf.transpose(1-preds))
+    mask = tf.cast(A, dtype=tf.float32)
+    temp = tf.multiply(temp, mask)
+    return tf.reduce_sum(temp)
