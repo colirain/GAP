@@ -547,5 +547,5 @@ class FCPartition(Model):
                                  dropout=self.placeholders['dropout'],
                                  logging=self.logging))
 
-    # def predict(self):
-    #     return tf.nn.softmax(self.outputs)
+    def predict(self):
+        return tf.argmax(self.outputs, axis=1)

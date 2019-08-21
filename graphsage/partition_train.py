@@ -70,9 +70,15 @@ def train(train_data, graph_data, test_data=None):
     
     # print(type(train_data[0][0]))
     # build model
+    check_point = 'trained_models'
+    if not os.path.exists(check_point):
+        os.makedirs(check_point)
+    
+
     model = FCPartition(placeholders, dim)
     print("done bulding model")
 
+    # saver = tf.train.Saver()
     # Init session
     sess = tf.Session()
 
@@ -87,6 +93,8 @@ def train(train_data, graph_data, test_data=None):
         train_cost = outs[1]
         print("Iter:{} Train_cost:{}".format(epoch+1, train_cost))
         loss.append(train_cost)
+    # saver.save(sess, check_point + '/partition.ckpt')
+    model.save(sess)
     DIR = log_dir()
     predic = outs[2]
     with open(DIR + '/loss.npy', 'w') as f:
