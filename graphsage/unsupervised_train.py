@@ -275,7 +275,7 @@ def train(train_data, test_data=None):
             train_cost = outs[2]
             train_mrr = outs[5]
             if train_shadow_mrr is None:
-                train_shadow_mrr = train_mrr#
+                train_shadow_mrr = train_mrr
             else:
                 train_shadow_mrr -= (1-0.99) * (train_shadow_mrr - train_mrr)
 
@@ -314,7 +314,7 @@ def train(train_data, test_data=None):
 
         if total_steps > FLAGS.max_total_steps:
                 break
-    
+    model.save(sess)
     print("Optimization Finished!")
     if FLAGS.save_embeddings:
         sess.run(val_adj_info.op)

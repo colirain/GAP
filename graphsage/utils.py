@@ -82,6 +82,10 @@ def load_embedded_data(prefix):
     data = np.load(prefix+'.npy')
     return data
 
+def load_embedded_idmap(prefix):
+    id_map = np.loadtxt(prefix+'.txt')
+    return id_map
+
 def load_graph_data(prefix):
     G_data = json.load(open(prefix + "-G.json"))
     G = json_graph.node_link_graph(G_data)
@@ -90,9 +94,12 @@ def load_graph_data(prefix):
     else:
         conversion = lambda n : n
     # print("type of conversion:{}".format(type(conversion)))
-    G_np = nx.to_numpy_matrix(G)
+    G_np = nx.to_numpy_matrix(G, sorted(G.nodes()))
     G_nodes = np.sum(G_np, axis = 1)
     G_aj =  G_np.astype(bool)
+    print(G_np)
+    print(G_aj)
+    print(G_nodes)
     # print("size of G_nodes: {}".format(G_nodes.shape))
     # print(G_nodes)
     # print(G_aj)
@@ -132,5 +139,8 @@ if __name__ == "__main__":
     # pairs = run_random_walks(G, nodes)
     # with open(out_file, "w") as fp:
     #     fp.write("\n".join([str(p[0]) + "\t" + str(p[1]) for p in pairs]))
-    G_data = load_graph(graph_file)
+    # G_data = load_graph(graph_file)
+    # id_map = load_embedded_idmap(graph_file)
+    load_graph_data(graph_file) 
+    # print(id_map)
     # print(type(G_data[1]))

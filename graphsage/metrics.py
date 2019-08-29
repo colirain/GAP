@@ -1,5 +1,6 @@
 import tensorflow as tf
-
+flags = tf.app.flags
+FLAGS = flags.FLAGS
 # DISCLAIMER:
 # Parts of this code file were originally forked from
 # https://github.com/tkipf/gcn
@@ -41,7 +42,9 @@ def masked_accuracy(preds, labels, mask):
 
 def gap_loss(preds, D, A):
     """
-    This module implement the loss function in paper [Azada Zazi, Will Hang. et al, 2019] Nazi, Azade & Hang, Will & Goldie, Anna & Ravi, Sujith & Mirhoseini, Azalia. (2019). GAP: Generalizable Approximate Graph Partitioning Framework. 
+    This module implement the loss function in paper [Azada Zazi, Will Hang. et al, 2019]
+    Nazi, Azade & Hang, Will & Goldie, Anna & Ravi, Sujith & Mirhoseini, Azalia. (2019). 
+    GAP: Generalizable Approximate Graph Partitioning Framework. 
     Args:
         preds (tensor(float)): output predited value, have size n x g
         D (tensor(float)): degree of nodes, have size n x 1
@@ -52,6 +55,9 @@ def gap_loss(preds, D, A):
     # print("preds size:{}".format(tf.shape(preds)))
     # print("D size:{}".format(tf.shape(D)))
     # print("A size:{}".format(tf.shape(A)))
+    # indices = tf.argmax(preds, axis=1)
+    # one_hot_preds = tf.one_hot(tf.squeeze(indices), FLAGS.num_of_partition)
+    # print(one_hot_preds.shape)
     temp = tf.matmul(tf.transpose(preds), D)
     # print("temp size:{}".format(tf.shape(temp)))
     temp = tf.transpose(preds)/temp
@@ -59,3 +65,4 @@ def gap_loss(preds, D, A):
     mask = tf.cast(A, dtype=tf.float32)
     temp = tf.multiply(temp, mask)
     return tf.reduce_sum(temp)
+

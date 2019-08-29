@@ -25,9 +25,10 @@ flags.DEFINE_string('outDir', 'output', 'name of the output file. must be specif
 flags.DEFINE_integer('epochs', 1, 'number of epochs to train.')
 flags.DEFINE_float('dropout', 0.0, 'dropout rate (1 - keep probability).')
 flags.DEFINE_float('weight_decay', 0.0, 'weight for l2 loss on embedding matrix.')
-flags.DEFINE_integer('dim_1', 128, 'Size of output dim (final is 2x this, if using concat)')
+flags.DEFINE_integer('dim_1', 64, 'Size of output dim (final is 2x this, if using concat)')
 flags.DEFINE_integer('dim_2', 128, 'Size of output dim (final is 2x this, if using concat)')
-flags.DEFINE_float('learning_rate', 0.00001, 'initial learning rate.')
+flags.DEFINE_float('learning_rate', 0.0001, 'initial learning rate.')
+flags.DEFINE_integer('num_of_partition', 2, 'number of partition')
 
 def construct_placeholders(num_classes):
     # Define placeholders
@@ -49,8 +50,8 @@ def log_dir():
 
 def train(train_data, graph_data, test_data=None):
     # build placeholder
-    num_classes = 3
-    placeholders = construct_placeholders(num_classes)
+    # num_classes = 3
+    placeholders = construct_placeholders(FLAGS.num_of_partition)
     
     # build feed_dict
     feed_dict =  dict()
@@ -62,7 +63,7 @@ def train(train_data, graph_data, test_data=None):
     # print("f:{}".format(len(train_data[0])))
     dim.append(len(train_data[0]))
     dim.append(FLAGS.dim_1)
-    dim.append(num_classes)
+    dim.append(FLAGS.num_of_partition)
     feed_dict.update({placeholders['features']: train_data})
     feed_dict.update({placeholders['dropout']: FLAGS.dropout})
     feed_dict.update({placeholders['D']: graph_id})
@@ -99,7 +100,7 @@ def train(train_data, graph_data, test_data=None):
     predic = outs[2]
     with open(DIR + '/loss.npy', 'w') as f:
         np.save(f, loss)
-    with open(DIR + '/predic.npy', 'w') as f:
+    with open(DIR + '/predict_train.npy', 'w') as f:
         np.save(f, predic)
 
 

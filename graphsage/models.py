@@ -175,6 +175,14 @@ class GeneralizedModel(Model):
 
         self.opt_op = self.optimizer.minimize(self.loss)
 
+    # def save(self, sess=None):
+    #     # super.save(sees)
+    #     if not sess:
+    #         raise AttributeError("TensorFlow session not provided.")
+    #     saver = tf.train.Saver(self.vars)
+    #     save_path = saver.save(sess, "tmp/%s.ckpt" % self.name)
+    #     print("Model saved in file: %s" % save_path)
+
 # SAGEInfo is a namedtuple that specifies the parameters 
 # of the recursive GraphSAGE layers
 SAGEInfo = namedtuple("SAGEInfo",
@@ -404,6 +412,13 @@ class SampleAndAggregate(GeneralizedModel):
         self.mrr = tf.reduce_mean(tf.div(1.0, tf.cast(self.ranks[:, -1] + 1, tf.float32)))
         tf.summary.scalar('mrr', self.mrr)
 
+    def save(self, sess=None):
+        if not sess:
+            raise AttributeError("TensorFlow session not provided.")
+        saver = tf.train.Saver()
+        save_path = saver.save(sess, "tmp/%s.ckpt" % self.name)
+        print("Model saved in file: %s" % save_path)
+
 
 class Node2VecModel(GeneralizedModel):
     def __init__(self, placeholders, dict_size, degrees, name=None,
@@ -525,7 +540,7 @@ class FCPartition(Model):
         # Weight decay loss
         for var in self.layers[0].vars.values():
             self.loss += FLAGS.weight_decay * tf.nn.l2_loss(var)
-
+            
         self.loss += metrics.gap_loss(self.outputs, self.placeholders['D'], self.placeholders['A'])
 
     def _accuracy(self):
