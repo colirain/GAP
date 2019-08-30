@@ -19,7 +19,7 @@ The implementation of the module is in folder graphsage. The partitioning module
 4. Find the output in 'output' folder. Use `read_data.py <FILENAME>` to show the results.
 
 ----
-*Original ReadMe of GraphSage
+*Original ReadMe of GraphSage*
 ## GraphSage: Representation Learning on Large Graphs
 
 #### Authors: [William L. Hamilton](http://stanford.edu/~wleif) (wleif@stanford.edu), [Rex Ying](http://joy-of-thinking.weebly.com/) (rexying@stanford.edu)
