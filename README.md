@@ -6,11 +6,10 @@ generate_graph.py is the file to generate graph using networkx. The output is in
 
 
 ### Module
-The implementation of the module is in folder graphsage. The partitioning module is extended here. 
-Class FCpartition in model.py is the partitioning module.
-
-Function gap_loss in metrics.py defines the loss function of the partitioning module.
-
+The implementation of the module is in folder graphsage. The partitioning module is extended here:
+1. Class FCpartition in model.py is the partitioning module.
+2. Function gap_loss in metrics.py defines the loss function of the partitioning module.
+3. partition_predict.py is the training process.
 
 
 ### Usage
