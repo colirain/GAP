@@ -1,3 +1,24 @@
+## GAP: Generalizable Approximate Graph Partitioining Framework
+This repo is an implementation of GAP framework. It is built based on the code of GraphSAGE.
+
+### Generate example graph
+generate_graph.py is the file to generate graph using networkx. The output is in data1.
+
+
+### Module
+The implementation of the module is in folder graphsage. The partitioning module is extended here. 
+Class FCpartition in model.py is the partitioning module.\\
+Function gap_loss in metrics.py defines the loss function of the partitioning module.\\
+
+
+### Usage
+1. Perpare the graph data. You can use generate_graph.py to generate a graph.
+2. run 'example_unsupvised.sh' to extrace the feature of the graph. Remember to change the data input to your data.
+3. run 'partition.sh' to train the partioning module. 
+
+
+----
+# Original ReadMe of GraphSage
 ## GraphSage: Representation Learning on Large Graphs
 
 #### Authors: [William L. Hamilton](http://stanford.edu/~wleif) (wleif@stanford.edu), [Rex Ying](http://joy-of-thinking.weebly.com/) (rexying@stanford.edu)
