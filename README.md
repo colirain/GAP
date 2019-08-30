@@ -14,9 +14,9 @@ The implementation of the module is in folder graphsage. The partitioning module
 
 ### Usage
 1. Perpare the graph data. You can use generate_graph.py to generate a graph.
-2. run 'example_unsupvised.sh' to extrace the feature of the graph. Remember to change the data input to your data.
-3. run 'partition.sh' to train the partioning module. 
-
+2. Run 'example_unsupvised.sh' to extrace the feature of the graph. Remember to change the data input to your data.
+3. Run 'partition.sh' to train the partioning module. 
+4. Find the output in output. Use 'read_data.py <FILENAME>' to show the results.
 
 ----
 *Original ReadMe of GraphSage
